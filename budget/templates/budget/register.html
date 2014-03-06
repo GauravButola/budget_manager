@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Register | Budget Manager{% endblock%}
+
+{% block content %}
+	<h2>Register</h2>
+		<div class="reg-form">
+		<form action="/register/" method="POST">
+			{% csrf_token %}
+
+			{{form}}
+
+			<input type="submit" value="Register" />
+		</form>
+	</div>
+{% endblock %}

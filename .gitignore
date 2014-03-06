@@ -2,4 +2,4 @@
 *.swo
 *.pyc
 *.pyo
-*.sqlit3
+*.sqlite3
