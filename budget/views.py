@@ -7,6 +7,8 @@ from django.contrib.auth import authenticate, login as auth_login, logout as aut
 from django.contrib.auth.decorators import login_required
 
 def index(request):
+	if request.user.is_authenticated():
+			return HttpResponseRedirect('/home/')
 	return render(request, 'budget/index.html')
 
 def error(request):
