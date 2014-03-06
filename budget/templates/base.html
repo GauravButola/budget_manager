@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<link rel="stylesheet" href="style.css" />
+	<title>{% block title %}Budget Manager{% endblock %}</title>
+</head>
+
+<body>
+	<header>
+		{% block sidebar %}
+		<h1>site header</h1>
+		{% endblock %}
+	</header>
+
+	<div id="content">
+		{% block content %}{% endblock %}
+	</div>
+</body>
+</html>
