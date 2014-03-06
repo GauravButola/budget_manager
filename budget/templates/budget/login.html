@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Login | Budget Manager{% endblock%}
+
+{% block content %}
+	{% if error %}
+		<h2>Either username or password is incorrect</h2>
+	{% endif %}
+	<h2>Login</h2>
+		<div class="reg-form">
+			<form action="/login/" method="POST">
+				{% csrf_token %}
+				<label>Username:</label>
+				<input type="text" name="username" />
+
+				<label>Password:</label>
+				<input type="password" name="password" />
+
+				<input type="submit" value="Login" />
+			</form>
+		</div>
+{% endblock %}

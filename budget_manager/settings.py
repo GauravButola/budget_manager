@@ -83,5 +83,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
-		    os.path.join(BASE_DIR, "budget/static"),
-						)
+		os.path.join(BASE_DIR, "budget/static"),
+		)
+
+LOGIN_URL = '/login/'
+LOGOUT_URL = '/logout/'
