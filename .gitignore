@@ -1,5 +1,5 @@
-.swp
-.swo
-.pyc
-.pyo
-.sqlit3
+*.swp
+*.swo
+*.pyc
+*.pyo
+*.sqlit3
