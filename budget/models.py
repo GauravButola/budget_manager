@@ -22,7 +22,7 @@ class Transaction(models.Model):
 
 class Budget(models.Model):
 	user = models.ForeignKey(User)
-	amount = models.DecimalField(max_digits=20, decimal_places=3)
+	amount = models.DecimalField(max_digits=20, decimal_places=3, null=True, blank=True)
 	balance = models.DecimalField(max_digits=20, decimal_places=3)
 	period = models.DateField(auto_now_add=True)
 

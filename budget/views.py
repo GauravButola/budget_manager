@@ -6,6 +6,7 @@ from django.contrib import auth
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from budget.forms import *
+from datetime import date
 
 def index(request):
 	if request.user.is_authenticated():
@@ -54,11 +55,29 @@ def register(request):
 
 @login_required
 def home(request):
+	"""
+	If user doesn't have this months budget data, then create one with
+	budget amount as Null and balance copied from last month.
+	"""
+	user = request.user
+	user_budgets = Budget.objects.filter(user=user)
+	if not user_budgets:
+		Budget.objects.create(user=user, balance=0)
+	last_month_budget = user_budgets.last()
+	today = date.today() 
+	curr_month_year = today.strftime('%Y %m')
+	last_budget_month_year = last_month_budget.period.strftime('%Y %m')
+
+	if last_budget_month_year != curr_month_year:
+		"""If there's no budget for current month"""
+		Budget.objects.create(user=user, balance=last_month_budget.balance)
+
 	return render(request, 'budget/home.html')
 
+@login_required
 def transactions(request):
 	"""
-	Sets different categories for credi and debit forms by passing 
+	Sets different categories for credit and debit forms by passing 
 	different queryset and finally passing a queryset to the form
 	class so that validations don't fail.
 	"""
