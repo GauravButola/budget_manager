@@ -10,4 +10,5 @@ urlpatterns = patterns('',
 		url(r'^transactions/$', views.transactions, name='transactions'),
 		url(r'^transactions/debit/$', views.debit, name='debit'),
 		url(r'^transactions/credit/$', views.credit, name='credit'),
+		url(r'^budget/$', views.budget, name='budget'),
 )

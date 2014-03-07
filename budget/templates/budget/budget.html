@@ -1,0 +1,20 @@
+{% extends "budget/home.html" %}
+
+{% block title %}Budget | Budget Manager{% endblock%}
+
+{% block content %}
+
+	Your budget for the month is :	{{ budget.amount }}
+	<br />
+	Balance left in your account is : {{ budget.balance }}
+
+	<br />
+	<form action="/budget/" method="POST">
+		{% csrf_token %}
+		<br />
+		<h3>Change current month's budget</h3>
+		{{ form }}
+		<input type="submit" value="Create Budget" />
+	</form>
+
+{% endblock %}
