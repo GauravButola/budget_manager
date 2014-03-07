@@ -1,0 +1,27 @@
+{% extends "budget/home.html" %}
+
+{% block title %}Transactions | Budget Manager{% endblock%}
+
+{% block content %}
+
+	<h2>Credit (Add money)</h2>
+	<form action="/transactions/credit/" method="POST">
+		{% csrf_token %}
+
+		{{ creditform }}
+
+		<input type="submit" value="Add" />
+	</form>
+
+	<br /> <hr /> <br />
+	
+	<h2>Debit (Withdraw money)</h2>
+	<form action="/transactions/debit/" method="POST">
+		{% csrf_token %}
+
+		{{ debitform }}
+
+		<input type="submit" value="Add" />
+	</form>
+
+{% endblock %}

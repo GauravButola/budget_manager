@@ -13,6 +13,9 @@ class Transaction(models.Model):
 	category = models.ForeignKey(Category)
 	comment = models.CharField(max_length=50)
 	amount = models.DecimalField(max_digits=20, decimal_places=3)
+	date = models.DateField(auto_now_add=True)
+
+	date.editable = True
 
 	def __unicode__(self):
 		return self.comment
@@ -21,7 +24,10 @@ class Budget(models.Model):
 	user = models.ForeignKey(User)
 	amount = models.DecimalField(max_digits=20, decimal_places=3)
 	balance = models.DecimalField(max_digits=20, decimal_places=3)
-	period = models.DateField()
+	period = models.DateField(auto_now_add=True)
+
+	period.editable = True
 
 	def __unicode__(self):
 		return str(self.user) + " " + str(self.period)
+

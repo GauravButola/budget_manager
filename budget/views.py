@@ -5,6 +5,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib import auth
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
+from budget.forms import *
 
 def index(request):
 	if request.user.is_authenticated():
@@ -55,3 +56,57 @@ def register(request):
 def home(request):
 	return render(request, 'budget/home.html')
 
+def transactions(request):
+	"""
+	Sets different categories for credi and debit forms by passing 
+	different queryset and finally passing a queryset to the form
+	class so that validations don't fail.
+	"""
+	args = {}
+  #Only show categories of earnings
+	creditQset = Category.objects.filter(spent=False)
+	TransactionForm.base_fields['category'] = forms.ModelChoiceField(queryset=creditQset)
+	args['creditform'] = TransactionForm()
+	
+  #Only show categories of spendings
+	debitQset = Category.objects.filter(spent=True)
+	TransactionForm.base_fields['category'] = forms.ModelChoiceField(queryset=debitQset)
+
+	args['debitform'] = TransactionForm()
+	
+  #Finally, making all Category objects available
+	qset = Category.objects.all()
+	TransactionForm.base_fields['category'] = forms.ModelChoiceField(queryset=qset)
+	return render(request, 'budget/transactions.html', args)
+
+def credit(request):
+	args = {}
+	if request.method == 'POST':
+		form = TransactionForm(request.POST)
+		transaction = form.save(commit=False)
+		transaction.user = request.user
+		transaction.save()
+		# Fixme
+		# Add to user balance too
+		
+		if form.is_valid():
+			form.save()
+			return HttpResponseRedirect('/transactions/')
+		else:
+			return HttpResponseRedirect('/home/')
+
+def debit(request):
+	args = {}
+	if request.method == 'POST':
+		form = TransactionForm(request.POST)
+		transaction = form.save(commit=False)
+		transaction.user = request.user
+		transaction.save()
+		# Fixme
+		# deduct user balance too
+		
+		if form.is_valid():
+			form.save()
+			return HttpResponseRedirect('/transactions/')
+		else:
+			return HttpResponseRedirect('/home/')
