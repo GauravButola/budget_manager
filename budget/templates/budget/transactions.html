@@ -15,6 +15,9 @@
 
 	<br /> <hr /> <br />
 	
+	{% if budget_warning %}
+		<h3>{{ budget_warning }}</h3>
+	{% endif %}
 	<h2>Debit (Withdraw money)</h2>
 	<form action="/transactions/debit/" method="POST">
 		{% csrf_token %}

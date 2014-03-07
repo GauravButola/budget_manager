@@ -94,6 +94,13 @@ def transactions(request):
   #Finally, making all Category objects available
 	qset = Category.objects.all()
 	TransactionForm.base_fields['category'] = forms.ModelChoiceField(queryset=qset)
+	
+	"""
+	Show budget warning, if balance is less than budget amount
+	"""
+	budget = Budget.objects.get(user=request.user)	
+	if budget.balance < budget.amount:
+		args['budget_warning'] = "You have gone past your budget for this month"
 	return render(request, 'budget/transactions.html', args)
 
 def handle_transaction(request, form, tr_method):
@@ -135,7 +142,6 @@ def debit(request):
 @login_required
 def budget(request):
 	args = {}
-	
 	#POST request to change current months budget
 	if request.method == 'POST':
 		form = BudgetForm(request.POST)
@@ -153,5 +159,30 @@ def budget(request):
 	user_budgets = Budget.objects.filter(user=user)
 	args['budget'] = user_budgets.last()
 
+	today = date.today() 
+	curr_month = today.strftime('%m')
+	credit_transactions = Transaction.objects.filter(user=user, category__spent=False, date__month=curr_month)
+	debit_transactions = Transaction.objects.filter(user=user, category__spent=True, date__month=curr_month)
+	args['credit'] = args['debit'] = 0
+	for transaction in credit_transactions:
+		args['credit'] += transaction.amount 
+	for transaction in debit_transactions:
+		args['debit'] += transaction.amount 
 	return render(request, 'budget/budget.html', args)
+
+@login_required
+def categories(request):
+	args = {}
+	if request.method == 'POST':
+		form = CategoryForm(request.POST)
+		if form.is_valid():
+			form.save()
+			return HttpResponseRedirect('/categories/')
+		else:
+			args['error'] = "Invalid data entered"
+	args['form'] = CategoryForm()
+
+	args['curr_month_credit'] = Category.objects.filter(spent=False)
+	args['curr_month_debit'] = Category.objects.filter(spent=True)
+	return render(request, 'budget/categories.html', args)
 
