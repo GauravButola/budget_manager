@@ -25,13 +25,35 @@ body {
 /*header*/
 header {
 	padding: 10px 50px 10px 50px;
-	background-color: #e5e5e5
+	background-color: #463265;
+	min-height: 30px;
+	box-shadow: 0px 3px 16px #463265;
+}
+
+header * {
+	color: white;
+}
+
+header a:hover {
+	background-color: #46325A;
 }
 
 header li {
 	list-style-type: none;
 	display: inline;
 	margin-left: 25px;
+}
+
+.logo {
+	float: left;
+}
+
+.navbar {
+	float: right;
+}
+
+.navbar a {
+	padding: 20px;
 }
 
 .logout {
@@ -72,22 +94,38 @@ input[type="submit"] {
 }
 
 /*home*/
-.money .balance{
-	color: green;
+.money-card {
+	background-color: #800033;
+	display: inline-block;
+	margin: 25px 0px 25px 70px;
+	width: 100px;
+	color: white;
+	font-weight: bold;
+	text-align: center;
+	padding: 8px;
+	border-radius: 9px;
 }
 
 .credit {
 	color: green;
 }
 
+.debit {
+	color: #C53773;
+}
+
+.left {
+	float: left;
+}
+
+.right {
+	float: right;
+}
+
 .rupee-emblem img{
 	width: 40px;
 	padding-right: 10px;
 	float: left;
-}
-
-.debit {
-	color: #C53773;
 }
 
 .transaction-history {
@@ -100,6 +138,7 @@ input[type="submit"] {
 	padding: 10px;
 	border: 1px solid #e5e5e5;
 	box-shadow: 1px 1px 3px #333;
+	border-radius: 8px;
 }
 
 .inline-form {

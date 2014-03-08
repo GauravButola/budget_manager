@@ -80,6 +80,17 @@ def home(request):
 	make_budget(request)
 	args['budget'] = Budget.objects.filter(user=user).last()
 	args['transactions'] = Transaction.objects.filter(user=user, date__month=curr_month, date__year=curr_year)
+
+	today = date.today() 
+	curr_month = today.strftime('%m')
+	curr_year = today.strftime('%Y')
+	credit_transactions = Transaction.objects.filter(user=user, category__spent=False, date__month=curr_month, date__year=curr_year)
+	debit_transactions = Transaction.objects.filter(user=user, category__spent=True, date__month=curr_month, date__year=curr_year)
+	args['credit'] = args['debit'] = 0
+	for transaction in credit_transactions:
+		args['credit'] += transaction.amount 
+	for transaction in debit_transactions:
+		args['debit'] += transaction.amount 
 	return render(request, 'budget/home.html', args)
 
 @login_required
@@ -183,17 +194,6 @@ def budget(request):
 	user = request.user
 	args['user_budgets'] = Budget.objects.filter(user=user)
 	args['budget'] = args['user_budgets'].last()
-
-	today = date.today() 
-	curr_month = today.strftime('%m')
-	curr_year = today.strftime('%Y')
-	credit_transactions = Transaction.objects.filter(user=user, category__spent=False, date__month=curr_month, date__year=curr_year)
-	debit_transactions = Transaction.objects.filter(user=user, category__spent=True, date__month=curr_month, date__year=curr_year)
-	args['credit'] = args['debit'] = 0
-	for transaction in credit_transactions:
-		args['credit'] += transaction.amount 
-	for transaction in debit_transactions:
-		args['debit'] += transaction.amount 
 	return render(request, 'budget/budget.html', args)
 
 @login_required

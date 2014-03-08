@@ -3,8 +3,21 @@
 {% block title %}Home | Budget Manager{% endblock%}
 
 {% block content %}
-	<div class="money">
-		Balance : <span class="balance">{{ budget.balance }} Rs.</span>
+	<div class="money-card">
+		<div>Balance</div>
+		<span class="money"> &#8377;{{ budget.balance }}</span>
+	</div>
+	<div class="money-card">
+		<div>Budget</div>
+		<span class="money"> &#8377;{{ budget.amount }}</span>
+	</div>
+	<div class="money-card">
+		<div>Spent</div>
+		<span class="money"> &#8377;{{ debit }}</span>
+	</div>
+	<div class="money-card">
+		<div>Added</div>
+		<span class="money"> &#8377;{{ credit }}</span>
 	</div>
 
 	<div class="transaction-history">
@@ -16,9 +29,17 @@
 						<img src="{{ tr.category.spent|yesno:"../static/images/rupee_debit.png,../static/images/rupee_credit.png" }}" />
 					<span class="rupee-emblem">
 					</span>
-					{{ tr.category.category_name }} : {{ tr.amount }} Rs.
+					<div class="left">
+						<b>{{ tr.category.category_name }}</b>
+					</div>
+					<div class="right">
+						{{ tr.amount }} Rs.
+					</div>
 					<br />
 					{{ tr.comment }}
+					<div class="right">
+						{{ tr.date }}
+					</div>
 				</div>
 			</div>
 		{% endfor %}

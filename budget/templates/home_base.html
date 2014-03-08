@@ -7,11 +7,13 @@
 		{{ user | capfirst }} | <a href="{% url 'logout' %}">Logout</a>
 	</span>
 
-	<ul>
-		<li><a href="{% url 'home' %}">Overview</a></li>
-		<li><a href="{% url 'transactions' %}">Transations</a></li>
-		<li><a href="{% url 'categories' %}">Categories</a></li>
-		<li><a href="{% url 'budget' %}">Budget</a></li>
-		<li><a href="{% url 'report' %}">Report</a></li>
-	</ul>
+	<div class="navbar">
+		<ul>
+			<li><a href="{% url 'home' %}">Overview</a></li>
+			<li><a href="{% url 'transactions' %}">Transations</a></li>
+			<li><a href="{% url 'categories' %}">Categories</a></li>
+			<li><a href="{% url 'budget' %}">Budget</a></li>
+			<li><a href="{% url 'report' %}">Reports</a></li>
+		</ul>
+	</div>
 {% endblock %}
