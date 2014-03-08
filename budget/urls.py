@@ -13,4 +13,6 @@ urlpatterns = patterns('',
 		url(r'^budget/$', views.budget, name='budget'),
 		url(r'^categories/$', views.categories, name='categories'),
 		url(r'^report/$', views.report, name='report'),
+		url(r'^report/$', views.report, name='report'),
+		url(r'^report/(?P<month>\d{2})/(?P<year>\d{4})/$', views.report, name='report'),
 )

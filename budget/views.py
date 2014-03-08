@@ -232,5 +232,19 @@ def categories(request):
 	return render(request, 'budget/categories.html', args)
 
 @login_required
-def report(request):
-	return render(request, 'budget/report.html')
+def report(request, month=None, year=None):
+	user = request.user
+	args = {}
+	args['budgets'] = Budget.objects.all()
+
+	today = date.today() 
+	curr_month = today.strftime('%m')
+	curr_year = today.strftime('%Y')
+
+	if month and year:
+		curr_month = month
+		curr_year = year
+	
+	args['debit_transactions'] = Transaction.objects.filter(user=user, category__spent=True,date__month=curr_month, date__year=curr_year)
+	args['credit_transactions'] = Transaction.objects.filter(user=user, category__spent=False,date__month=curr_month, date__year=curr_year)
+	return render(request, 'budget/report.html', args)

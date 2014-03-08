@@ -1,6 +1,81 @@
 {% extends "home_base.html" %}
 
 {% block title %}Download monthly reportis | Budget Manager{% endblock%}
-
 {% block content %}
+
+	
+	{% for budget in budgets %}
+	<a href="{% url 'report' %}{{ budget.period|date:'m/Y' }}">
+		budget : {{ budget.period|date:'m/Y' }}
+	</a>
+	</br />
+	{% endfor %}
+	<center><h2>Monthly Budget Report</h2></center>	<br />
+	<h4>Debit transactions of the month</h4>
+	<table>
+			<tr>
+				<th>
+					Date
+				</th>
+				<th>
+					Budget Amount (INR)
+				</th>
+				<th>
+					Category
+				</th>
+				<th>
+					Comment
+				</th>
+			</tr>
+		{% for tr in debit_transactions %}
+		<tr style="background: {% cycle 'white' '#e5e5e5'%}">
+				<td>
+					{{ tr.date }}
+				</td>
+				<td>
+					{{ tr.amount }} Rs.
+				</td>
+				<td>
+					{{ tr.category.category_name }}
+				</td>
+				<td>
+					{{ tr.comment }}
+				</td>
+			</tr>
+		{% endfor %}
+	</table>
+
+	<h4>Credit transactions of the month</h4>
+		<table>
+				<tr>
+					<th>
+						Date
+					</th>
+					<th>
+						Budget Amount (INR)
+					</th>
+					<th>
+						Category
+					</th>
+					<th>
+						Comment
+					</th>
+				</tr>
+			{% for tr in credit_transactions %}
+			<tr style="background: {% cycle 'white' '#e5e5e5'%}">
+					<td>
+						{{ tr.date }}
+					</td>
+					<td>
+						{{ tr.amount }} Rs.
+					</td>
+					<td>
+						{{ tr.category.category_name }}
+					</td>
+					<td>
+						{{ tr.comment }}
+					</td>
+				</tr>
+			{% endfor %}
+		</table>
 {% endblock %}
