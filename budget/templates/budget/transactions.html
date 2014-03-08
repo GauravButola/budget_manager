@@ -4,27 +4,25 @@
 
 {% block content %}
 
-	<h2>Credit (Add money)</h2>
-	<form action="/transactions/credit/" method="POST">
-		{% csrf_token %}
+	<div class="inline-form">
+		<h4>Credit (Add money)</h4>
+		<form action="/transactions/credit/" method="POST">
+			{% csrf_token %}
+			{{ creditform }}
+			<input type="submit" value="Add" />
+		</form>
+	</div>
 
-		{{ creditform }}
-
-		<input type="submit" value="Add" />
-	</form>
-
-	<br /> <hr /> <br />
-	
-	{% if budget_warning %}
-		<h3>{{ budget_warning }}</h3>
-	{% endif %}
-	<h2>Debit (Withdraw money)</h2>
-	<form action="/transactions/debit/" method="POST">
-		{% csrf_token %}
-
-		{{ debitform }}
-
-		<input type="submit" value="Add" />
-	</form>
+	<div class="inline-form">
+		{% if budget_warning %}
+			<h4>{{ budget_warning }}</h4>
+		{% endif %}
+		<h4>Debit (Withdraw money)</h4>
+		<form action="/transactions/debit/" method="POST">
+			{% csrf_token %}
+			{{ debitform }}
+			<input type="submit" value="Add" />
+		</form>
+	</div>
 
 {% endblock %}

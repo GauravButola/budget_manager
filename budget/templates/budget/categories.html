@@ -8,13 +8,16 @@
 		<p> {{ error }} </p>
 	{% endif %}
 
-	<h3>Add Category</h3>
-	<form action="/categories/" method="POST">
-		{% csrf_token %}
-		{{ form }}
-		<input type="submit" value"submit" />
-	</form>
+	<div class="inline-form">
+		<h4>Add Category</h4>
+		<form action="/categories/" method="POST">
+			{% csrf_token %}
+			{{ form }}
+			<input type="submit" value"submit" />
+		</form>
+	</div>
  
+	{% comment %}
 	<div class="categories">
 		<h3>Credit</h3>
 		{% for category in curr_month_credit %}
@@ -29,7 +32,9 @@
 			<br />
 		{% endfor %}
 	</div>
+	{% endcomment %}
 
+	{% comment %}
 	<h3>Added money on each category this month</h3>
 	{% for category, amount in credit_dict.iteritems %}
 		{{ category }} : {{ amount }} 
@@ -39,8 +44,44 @@
 	<h3>Spent on each category this month</h3>
 	{% for category, amount in debit_dict.iteritems %}
 		{{ category }} : {{ amount }} 
-			<br />
+		<br />
 		{% endfor %}
+	{% endcomment %}
 
+		<div id="debitPieChart" style="width: 800px; height: 500px;"></div>
+		<div id="creditPieChart" style="width: 800px; height: 500px;"></div>
+		
+		<script type="text/javascript">
+			google.load("visualization", "1", {packages:["corechart"]});
+			google.setOnLoadCallback(drawChart);
+			function drawChart() {
+				
+			var creditData = google.visualization.arrayToDataTable([
+						['Category', 'Amount'],
+						{% for category, amount in credit_dict.iteritems %}
+						['{{ category }}', {{ amount }}],
+						{% endfor %}
+						]);
+			var creditOptions = {
+				title: 'Your credit transactions by category this month'
+			};
+			var credit = new google.visualization.PieChart(document.getElementById('creditPieChart'));
+			credit.draw(creditData, creditOptions);
+
+			var debitData = google.visualization.arrayToDataTable([
+						['Category', 'Amount'],
+						{% for category, amount in debit_dict.iteritems %}
+						['{{ category }}', {{ amount }}],
+						{% endfor %}
+						]);
+
+			var debitOptions = {
+				title: 'Your debit transactions by category this month'
+			};
+
+			var debitChart = new google.visualization.PieChart(document.getElementById('debitPieChart'));
+			debitChart.draw(debitData, debitOptions);
+			}
+</script>
 
 {% endblock %}
