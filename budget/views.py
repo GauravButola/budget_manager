@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from budget.forms import *
 from datetime import date
 from decimal import Decimal
+from collections import defaultdict
 
 def index(request):
 	if request.user.is_authenticated():
@@ -161,8 +162,9 @@ def budget(request):
 
 	today = date.today() 
 	curr_month = today.strftime('%m')
-	credit_transactions = Transaction.objects.filter(user=user, category__spent=False, date__month=curr_month)
-	debit_transactions = Transaction.objects.filter(user=user, category__spent=True, date__month=curr_month)
+	curr_year = today.strftime('%Y')
+	credit_transactions = Transaction.objects.filter(user=user, category__spent=False, date__month=curr_month, date__year=curr_year)
+	debit_transactions = Transaction.objects.filter(user=user, category__spent=True, date__month=curr_month, date__year=curr_year)
 	args['credit'] = args['debit'] = 0
 	for transaction in credit_transactions:
 		args['credit'] += transaction.amount 
@@ -172,6 +174,7 @@ def budget(request):
 
 @login_required
 def categories(request):
+	user = request.user
 	args = {}
 	if request.method == 'POST':
 		form = CategoryForm(request.POST)
@@ -184,5 +187,26 @@ def categories(request):
 
 	args['curr_month_credit'] = Category.objects.filter(spent=False)
 	args['curr_month_debit'] = Category.objects.filter(spent=True)
+
+	today = date.today() 
+	curr_month = today.strftime('%m')
+	curr_year = today.strftime('%Y')
+	credit_transactions = Transaction.objects.filter(user=user, category__spent=False, date__month=curr_month, date__year=curr_year)
+	debit_transactions = Transaction.objects.filter(user=user, category__spent=True, date__month=curr_month, date__year=curr_year)
+
+	# Get sum of all related categories
+	sums = defaultdict(Decimal)
+	for tr in credit_transactions:
+		    sums[tr.category] += tr.amount
+	args['credit_dict'] = dict(sums) # typecast dict on defaultdick
+
+	# Get sum of all related categories
+	sums = defaultdict(Decimal)
+	for tr in debit_transactions:
+		    sums[tr.category] += tr.amount
+	args['debit_dict'] = dict(sums) # typecast dict on defaultdick
 	return render(request, 'budget/categories.html', args)
 
+@login_required
+def report(request):
+	return render(request, 'budget/report.html')
