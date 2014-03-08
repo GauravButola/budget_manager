@@ -3,5 +3,24 @@
 {% block title %}Home | Budget Manager{% endblock%}
 
 {% block content %}
-	
+	<div class="money">
+		Balance : <span class="balance">{{ budget.balance }} Rs.</span>
+	</div>
+
+	<div class="transaction-history">
+		<h3>Transaction History</h3>
+		{% for tr in transactions %}
+			<div class="transaction">
+				<div class="{{ tr.category.spent|yesno:"debit,credit" }}">
+					<span class="rupee-emblem">
+						<img src="{{ tr.category.spent|yesno:"../static/images/rupee_debit.png,../static/images/rupee_credit.png" }}" />
+					<span class="rupee-emblem">
+					</span>
+					{{ tr.category.category_name }} : {{ tr.amount }} Rs.
+					<br />
+					{{ tr.comment }}
+				</div>
+			</div>
+		{% endfor %}
+	</div>
 {% endblock %}

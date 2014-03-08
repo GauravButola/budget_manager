@@ -52,8 +52,7 @@ def register(request):
 	args['form'] = UserCreationForm()
 	return render(request, 'budget/register.html', args)
 
-@login_required
-def home(request):
+def make_budget(request):
 	"""
 	If user doesn't have this months budget data, then create one, with
 	budget amount as Null and balance copied from last month.
@@ -70,8 +69,18 @@ def home(request):
 	if last_budget_month_year != curr_month_year:
 		"""If there's no budget for current month"""
 		Budget.objects.create(user=user, balance=last_month_budget.balance)
-	
-	return render(request, 'budget/home.html')
+
+@login_required
+def home(request):
+	args = {}
+	today = date.today() 
+	curr_month = today.strftime('%m')
+	curr_year = today.strftime('%Y')
+	user = request.user
+	make_budget(request)
+	args['budget'] = Budget.objects.filter(user=user).last()
+	args['transactions'] = Transaction.objects.filter(user=user, date__month=curr_month, date__year=curr_year)
+	return render(request, 'budget/home.html', args)
 
 @login_required
 def transactions(request):
@@ -99,15 +108,24 @@ def transactions(request):
 	"""
 	Show budget warning, if balance is less than budget amount
 	"""
-	budget = Budget.objects.get(user=request.user)	
-	if budget.balance < budget.amount:
-		args['budget_warning'] = "You have gone past your budget for this month"
+	user = request.user
+	today = date.today() 
+	curr_month = today.strftime('%m')
+	curr_year = today.strftime('%Y')
+	debit_transactions = Transaction.objects.filter(user=user, category__spent=True, date__month=curr_month, date__year=curr_year)
+	args['debit'] = 0
+	for transaction in debit_transactions:
+		args['debit'] += transaction.amount 
+
+	budget = Budget.objects.filter(user=request.user).last()
+	if budget.amount < args['debit']:
+		args['budget_warning'] = """You have gone past your budget for this month.
+		You have spent %s Rs. and your budget is set to %s Rs.""" % (str(args['debit']),str(budget.amount))
 	return render(request, 'budget/transactions.html', args)
 
 def handle_transaction(request, form, tr_method):
 	transaction = form.save(commit=False)
 	transaction.user = request.user
-	transaction.save()
 
 	user = request.user
 	user_budgets = Budget.objects.filter(user=user)
@@ -118,6 +136,10 @@ def handle_transaction(request, form, tr_method):
 	elif tr_method == 'debit':
 		#Deduct user's balance
 		budget.balance -= Decimal(form.data['amount'])
+		if budget.balance < 0:
+			error = "Error: Not suffient balance to debit"
+			return error
+	transaction.save()
 	budget.save()
 
 @login_required
@@ -135,7 +157,9 @@ def debit(request):
 	form = TransactionForm(request.POST)
 	if form.is_valid():
 		if request.method == 'POST':
-			handle_transaction(request, form, 'debit')
+			error = handle_transaction(request, form, 'debit')
+			if error:
+				return HttpResponse(error)
 		return HttpResponseRedirect('/transactions/')
 	else:
 		return HttpResponse("Form validation error, please check the data you entered")
@@ -157,8 +181,8 @@ def budget(request):
 			args['error'] = "Invalid data entered"
 	args['form'] = BudgetForm()
 	user = request.user
-	user_budgets = Budget.objects.filter(user=user)
-	args['budget'] = user_budgets.last()
+	args['user_budgets'] = Budget.objects.filter(user=user)
+	args['budget'] = args['user_budgets'].last()
 
 	today = date.today() 
 	curr_month = today.strftime('%m')

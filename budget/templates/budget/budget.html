@@ -3,6 +3,43 @@
 {% block title %}Budget | Budget Manager{% endblock%}
 
 {% block content %}
+	<div class="inline-form">
+		<form action="/budget/" method="POST">
+			{% csrf_token %}
+			<h4>Change current month's budget</h4>
+			{{ form }}
+			<input type="submit" value="Create Budget" />
+		</form>
+	</div>
+
+	<h4>Previous budget plans:</h4>
+	<table>
+			<tr>
+				<th>
+					Date
+				</th>
+				<th>
+					Budget Amount (INR)
+				</th>
+				<th>
+					Balance (INR)
+				</th>
+			</tr>
+		{% for budget in user_budgets %}
+		<tr style="background: {% cycle 'white' '#e5e5e5'%}">
+				<td>
+					{{ budget.period }}
+				</td>
+				<td>
+					{{ budget.amount }} Rs.
+				</td>
+				<td>
+					{{ budget.balance }} Rs.
+				</td>
+			</tr>
+		{% endfor %}
+	</table>
+	<br />
 
 	Your budget for the month is :	{{ budget.amount }}
 	<br />
@@ -12,13 +49,5 @@
 	<br />
 	Added so far this month : {{ credit }}
 
-	<br />
-	<form action="/budget/" method="POST">
-		{% csrf_token %}
-		<br />
-		<h3>Change current month's budget</h3>
-		{{ form }}
-		<input type="submit" value="Create Budget" />
-	</form>
 
 {% endblock %}
