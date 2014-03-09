@@ -1,21 +1,27 @@
 {% extends "home_base.html" %}
 
 {% block title %}Home | Budget Manager{% endblock%}
-
 {% block content %}
-	<div class="money-card">
+
+	{% if budget_warning %}
+		<div class="error">
+			{{ budget_warning }}
+		</div>
+	{% endif %}
+
+	<div title="Your balance this month" class="money-card">
 		<div>Balance</div>
 		<span class="money"> &#8377;{{ budget.balance }}</span>
 	</div>
-	<div class="money-card">
+	<div title="Budget amount you have set for this month" class="money-card">
 		<div>Budget</div>
 		<span class="money"> &#8377;{{ budget.amount }}</span>
 	</div>
-	<div class="money-card">
+	<div title="Amount you have withdrawn this month" class="money-card">
 		<div>Spent</div>
 		<span class="money"> &#8377;{{ debit }}</span>
 	</div>
-	<div class="money-card">
+	<div title="Amount you have added this month" class="money-card">
 		<div>Added</div>
 		<span class="money"> &#8377;{{ credit }}</span>
 	</div>

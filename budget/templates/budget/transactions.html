@@ -11,6 +11,7 @@
 			{{ creditform }}
 			<input type="submit" value="Add" />
 		</form>
+		<a href="{% url 'categories' %}">Add category</a>
 	</div>
 
 	<div class="inline-form">
@@ -25,7 +26,8 @@
 			{{ debitform }}
 			<input type="submit" value="Add" />
 		</form>
+		<a href="{% url 'categories' %}">Add category</a>
 	</div>
 
-	<center>To see full list of all transactions, go to "Overview" or See the "Reprts" page. Transactions are siltently added for the time being.</center>
+	<!--<center>To see full list of all transactions, go to "Overview" or See the "Reprts" page. Transactions are siltently added for the time being.</center>-->
 {% endblock %}

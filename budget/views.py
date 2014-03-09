@@ -91,7 +91,26 @@ def home(request):
 		args['credit'] += transaction.amount 
 	for transaction in debit_transactions:
 		args['debit'] += transaction.amount 
+	args['budget_warning'] = budget_warning(request)
 	return render(request, 'budget/home.html', args)
+
+def budget_warning(request):
+	"""
+	Show budget warning, if balance is less than budget amount
+	"""
+	user = request.user
+	today = date.today() 
+	curr_month = today.strftime('%m')
+	curr_year = today.strftime('%Y')
+	debit_transactions = Transaction.objects.filter(user=user, category__spent=True, date__month=curr_month, date__year=curr_year)
+	debit = 0
+	for transaction in debit_transactions:
+		debit += transaction.amount 
+	budget = Budget.objects.filter(user=request.user).last()
+	if budget.amount < debit and budget.amount:
+		budget_warning = """You have gone past your budget for this month.
+		You have spent %s Rs. and your budget is set to %s Rs.""" % (str(debit),str(budget.amount))
+		return budget_warning
 
 @login_required
 def transactions(request):
@@ -116,22 +135,7 @@ def transactions(request):
 	qset = Category.objects.all()
 	TransactionForm.base_fields['category'] = forms.ModelChoiceField(queryset=qset)
 	
-	"""
-	Show budget warning, if balance is less than budget amount
-	"""
-	user = request.user
-	today = date.today() 
-	curr_month = today.strftime('%m')
-	curr_year = today.strftime('%Y')
-	debit_transactions = Transaction.objects.filter(user=user, category__spent=True, date__month=curr_month, date__year=curr_year)
-	args['debit'] = 0
-	for transaction in debit_transactions:
-		args['debit'] += transaction.amount 
-
-	budget = Budget.objects.filter(user=request.user).last()
-	if budget.amount < args['debit']:
-		args['budget_warning'] = """You have gone past your budget for this month.
-		You have spent %s Rs. and your budget is set to %s Rs.""" % (str(args['debit']),str(budget.amount))
+	args['budget_warning'] = budget_warning(request)
 	return render(request, 'budget/transactions.html', args)
 
 def handle_transaction(request, form, tr_method):
@@ -159,6 +163,7 @@ def credit(request):
 	if form.is_valid():
 		if request.method == 'POST':
 			handle_transaction(request, form, 'credit')
+			return HttpResponseRedirect('/home/')
 		return HttpResponseRedirect('/transactions/')
 	else:
 		return HttpResponse("Form validation error, please check the data you entered")
@@ -171,6 +176,7 @@ def debit(request):
 			error = handle_transaction(request, form, 'debit')
 			if error:
 				return HttpResponse(error)
+			return HttpResponseRedirect('/home/')
 		return HttpResponseRedirect('/transactions/')
 	else:
 		return HttpResponse("Form validation error, please check the data you entered")
