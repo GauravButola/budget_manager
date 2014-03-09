@@ -3,13 +3,18 @@
 {% block title %}Download monthly reportis | Budget Manager{% endblock%}
 {% block content %}
 
-	
-	{% for budget in budgets %}
-	<a href="{% url 'report' %}{{ budget.period|date:'m/Y' }}">
-		budget : {{ budget.period|date:'m/Y' }}
-	</a>
-	</br />
-	{% endfor %}
+	<div class="showmore">
+		<span class="report-toggle">Download previous months' report.</span>
+		<div class="reports">
+			{% for budget in budgets %}
+			<a href="{% url 'report' %}{{ budget.period|date:'m/Y' }}">
+				budget : {{ budget.period|date:'m/Y' }}
+			</a>
+			</br />
+			{% endfor %}
+		</div>
+	</div>
+
 	<center><h2>Monthly Budget Report</h2></center>	<br />
 	<h4>Debit transactions of the month</h4>
 	<table>
@@ -78,4 +83,7 @@
 				</tr>
 			{% endfor %}
 		</table>
+		<div class="print">
+			Print Report
+		</div>
 {% endblock %}

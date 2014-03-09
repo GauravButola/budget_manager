@@ -3,9 +3,16 @@
 {% block title %}Budget Manager{% endblock %}
 
 {% block content %}
+	{% if success %}
+		<div class="success">	
+			{{ success }}
+		</div>
+	{% endif %}
 
 	{% if error %}
-		<p> {{ error }} </p>
+		<div class="error">	
+			{{ error }}
+		</div>
 	{% endif %}
 
 	<div class="inline-form">

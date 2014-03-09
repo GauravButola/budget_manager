@@ -3,17 +3,20 @@
 {% block title %}Register | Budget Manager{% endblock%}
 
 {% block content %}
-	<h2>Register</h2>
 		{% if error %}
-			<h1>Found error</h1>
+			<div class="error">
+				Error: please check the data you entered.
+			</div>
 		{% endif %}
+
 		<div class="reg-form">
 			<form action="/register/" method="POST">
 				{% csrf_token %}
 
 				{{form}}
 
-				<input type="submit" value="Register" />
+				<input type="submit" value="Signup" />
+				<span style="float:right"><a href="{% url 'login' %}">Login</a></span>
 			</form>
 		</div>
 {% endblock %}

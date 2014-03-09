@@ -181,13 +181,14 @@ def budget(request):
 	#POST request to change current months budget
 	if request.method == 'POST':
 		form = BudgetForm(request.POST)
-		if form.is_valid():
+		if form.is_valid() and form.data['amount']:
 			user = request.user
 			user_budgets = Budget.objects.filter(user=user)
 			budget = user_budgets.last()
 			budget.amount = Decimal(form.data['amount'])
 			budget.save()
-			return HttpResponseRedirect('/budget/')
+			#return HttpResponseRedirect('/budget/')
+			args['success'] = "Budget saved successsfully";
 		else:
 			args['error'] = "Invalid data entered"
 	args['form'] = BudgetForm()
@@ -204,7 +205,7 @@ def categories(request):
 		form = CategoryForm(request.POST)
 		if form.is_valid():
 			form.save()
-			return HttpResponseRedirect('/categories/')
+			args['success'] = 'Category added successfully'
 		else:
 			args['error'] = "Invalid data entered"
 	args['form'] = CategoryForm()
@@ -222,20 +223,20 @@ def categories(request):
 	sums = defaultdict(Decimal)
 	for tr in credit_transactions:
 		    sums[tr.category] += tr.amount
-	args['credit_dict'] = dict(sums) # typecast dict on defaultdick
+	args['credit_dict'] = dict(sums) # typecast dict on defaultdict
 
 	# Get sum of all related categories
 	sums = defaultdict(Decimal)
 	for tr in debit_transactions:
 		    sums[tr.category] += tr.amount
-	args['debit_dict'] = dict(sums) # typecast dict on defaultdick
+	args['debit_dict'] = dict(sums) # typecast dict on defaultdict
 	return render(request, 'budget/categories.html', args)
 
 @login_required
 def report(request, month=None, year=None):
 	user = request.user
 	args = {}
-	args['budgets'] = Budget.objects.all()
+	args['budgets'] = Budget.objects.filter(user=user)
 
 	today = date.today() 
 	curr_month = today.strftime('%m')

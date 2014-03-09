@@ -15,7 +15,9 @@
 
 	<div class="inline-form">
 		{% if budget_warning %}
-			<h4>{{ budget_warning }}</h4>
+		<div class="error">
+			{{ budget_warning }}
+		</div>
 		{% endif %}
 		<h4>Debit (Withdraw money)</h4>
 		<form action="/transactions/debit/" method="POST">
@@ -25,4 +27,5 @@
 		</form>
 	</div>
 
+	<center>To see full list of all transactions, go to "Overview" or See the "Reprts" page. Transactions are siltently added for the time being.</center>
 {% endblock %}

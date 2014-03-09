@@ -4,18 +4,21 @@
 
 {% block content %}
 	{% if error %}
-		<h2>Either username or password is incorrect</h2>
-	{% endif %}
-		<div class="reg-form">
-			<form action="/login/" method="POST">
-				{% csrf_token %}
-				<label>Username:</label>
-				<input type="text" name="username" />
-
-				<label>Password:</label>
-				<input type="password" name="password" />
-
-				<input type="submit" value="Login" />
-			</form>
+		<div class="error">
+			Either username or password is incorrect.
 		</div>
+	{% endif %}
+	<div class="reg-form">
+		<form action="/login/" method="POST">
+			{% csrf_token %}
+			<label>Username:</label>
+			<input type="text" name="username" />
+
+			<label>Password:</label>
+			<input type="password" name="password" />
+
+			<input type="submit" value="Login" />
+			<span style="float:right"><a href="{% url 'register' %}">Register</a></span>
+		</form>
+	</div>
 {% endblock %}

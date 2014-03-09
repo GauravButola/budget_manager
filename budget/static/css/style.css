@@ -50,6 +50,7 @@ header li {
 
 .navbar {
 	float: right;
+	padding-right: 50px;
 }
 
 .navbar a {
@@ -141,12 +142,35 @@ input[type="submit"] {
 	border-radius: 8px;
 }
 
+.error {
+	color: #C71821;
+	background-color: #FFDDDF;
+	border: 1px solid #F1C4C6;
+	border-radius : 8px;
+	padding: 5px;
+	font-size: 0.9em;
+	cursor: pointer;
+}
+
+.success {
+	color: #14612A;
+	background-color: #E9F6E8;
+	border: 1px solid #C4E0CC;
+	border-radius: 8px;
+	padding: 5px;
+	font-size: 0.9em;
+	cursor: pointer;
+}
 .inline-form {
 	margin: 25px;
 	padding: 10px;
 	border: 1px solid #e5e5e5;
 	box-shadow: 1px 3px 8px #C2B9B9;
 }	
+
+.inline-form * {
+	margin: 10px 0px 10px 0px;
+}
 
 table {
 	width: 700px;
@@ -166,3 +190,36 @@ td {
 	border: 1px solid #d4d4d4;
 }
 
+/*Reports*/
+.showmore {
+	color: #428bca;
+	background-color: #F3F6F8;
+	border-radius: 10px;
+	padding: 10px;
+}
+
+.reports {
+	font-size: 0.8em;
+	padding: 10px;
+	display: none;
+}
+
+.report-toggle {
+	cursor: pointer;
+}
+
+.print {
+	margin: auto;
+	margin-top: 50px;
+	color: white;
+	background-color: #428bca;
+	border-radius: 10px;
+	padding: 10px;
+	width: 100px;
+	text-align: center;
+	cursor: pointer;
+}
+
+.print:hover {
+	background-color: #72B7F3;
+}
