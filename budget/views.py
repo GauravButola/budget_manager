@@ -58,10 +58,11 @@ def make_budget(request):
 	budget amount as Null and balance copied from last month.
 	"""
 	user = request.user
-	user_budgets = Budget.objects.filter(user=user)
+	user_budgets = Budget.objects.filter(user=user).order_by("-period")
 	if not user_budgets:
 		Budget.objects.create(user=user, balance=0)
-	last_month_budget = user_budgets.last()
+		user_budgets = Budget.objects.filter(user=user).order_by("-period")
+	last_month_budget = user_budgets.first()
 	today = date.today() 
 	curr_month_year = today.strftime('%Y %m')
 	last_budget_month_year = last_month_budget.period.strftime('%Y %m')
@@ -78,7 +79,7 @@ def home(request):
 	curr_year = today.strftime('%Y')
 	user = request.user
 	make_budget(request)
-	args['budget'] = Budget.objects.filter(user=user).last()
+	args['budget'] = Budget.objects.filter(user=user).order_by("-period").first()
 	args['transactions'] = Transaction.objects.filter(user=user, date__month=curr_month, date__year=curr_year)
 
 	today = date.today() 
@@ -106,7 +107,7 @@ def budget_warning(request):
 	debit = 0
 	for transaction in debit_transactions:
 		debit += transaction.amount 
-	budget = Budget.objects.filter(user=request.user).last()
+	budget = Budget.objects.filter(user=request.user).order_by("-period").first()
 	if budget.amount < debit and budget.amount:
 		budget_warning = """You have gone past your budget for this month.
 		You have spent %s Rs. and your budget is set to %s Rs.""" % (str(debit),str(budget.amount))
@@ -143,8 +144,8 @@ def handle_transaction(request, form, tr_method):
 	transaction.user = request.user
 
 	user = request.user
-	user_budgets = Budget.objects.filter(user=user)
-	budget = user_budgets.last()
+	user_budgets = Budget.objects.filter(user=user).order_by("-period")
+	budget = user_budgets.first()
 	if tr_method == 'credit':
 		#Increase user's balance
 		budget.balance += Decimal(form.data['amount'])
@@ -189,8 +190,8 @@ def budget(request):
 		form = BudgetForm(request.POST)
 		if form.is_valid() and form.data['amount']:
 			user = request.user
-			user_budgets = Budget.objects.filter(user=user)
-			budget = user_budgets.last()
+			user_budgets = Budget.objects.filter(user=user).order_by("-period")
+			budget = user_budgets.first()
 			budget.amount = Decimal(form.data['amount'])
 			budget.save()
 			#return HttpResponseRedirect('/budget/')
@@ -199,8 +200,8 @@ def budget(request):
 			args['error'] = "Invalid data entered"
 	args['form'] = BudgetForm()
 	user = request.user
-	args['user_budgets'] = Budget.objects.filter(user=user)
-	args['budget'] = args['user_budgets'].last()
+	args['user_budgets'] = Budget.objects.filter(user=user).order_by("-period")
+	args['budget'] = args['user_budgets'].first()
 	return render(request, 'budget/budget.html', args)
 
 @login_required
